@@ -1,0 +1,33 @@
+# 100basecommit Run
+name: Auto Commit Bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Update file
+        run: |
+          echo "$(date)" >> commits.txt
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add .
+          git commit -m "auto commit $(date)" || echo "No changes"
+
+      - name: Push changes
+        run: git push
